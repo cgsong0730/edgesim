@@ -1,4 +1,4 @@
-package graph_cgs
+package graph
 
 import (
 	"fmt"
