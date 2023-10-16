@@ -1,14 +1,14 @@
 package simulation
 
 import (
+	"edgesim/edge"
+	graph "edgesim/graph"
+	"edgesim/weightedrand"
 	"fmt"
-	"gopro1/edge"
-	graph "gopro1/graph_cgs"
-	"gopro1/weightedrand"
 	"math/rand"
 )
 
-func ImagePullingSimulation(numOfEdgeServer int, numOfRegistryServer int, numOfPulling int, managementInterval int) {
+func ImagePullingSimulation(numOfEdgeServer int, numOfRegistryServer int, numOfSubgroup int, numOfPulling int, managementInterval int) {
 	var RegistryServerList []edge.RegistryServer
 	var firstRegistryServer edge.EdgeRegistryServer
 	var secondRegistryServer edge.EdgeRegistryServer
@@ -35,44 +35,61 @@ func ImagePullingSimulation(numOfEdgeServer int, numOfRegistryServer int, numOfP
 	for j := 1; j <= numOfPulling; j++ {
 		var no graph.Graph // network overhead
 		var af graph.Graph // affinity
+		var weightList []weightedrand.Choice[int, int]
 
 		for i := 0; i < numOfEdgeServer; i++ {
-			weightList := []int{1, 1, 1, 1, 1}
-			weightList[i/numOfRegistryServer] = 3
-			chooser, _ := weightedrand.NewChooser(
-				weightedrand.NewChoice(1, weightList[0]),
-				weightedrand.NewChoice(2, weightList[1]),
-				weightedrand.NewChoice(3, weightList[2]),
-				weightedrand.NewChoice(4, weightList[3]),
-				weightedrand.NewChoice(5, weightList[4]),
-			)
-
+			if i%numOfRegistryServer == 0 {
+				weightList = append(weightList, weightedrand.NewChoice(i+1, 3))
+			} else {
+				weightList = append(weightList, weightedrand.NewChoice(i+1, 1))
+			}
+			chooser, _ := weightedrand.NewChooser(weightList...)
 			result := chooser.Pick()
-			_ = edge.ImagePulling(&edgeServerList[i], (rand.Intn(100)+1)+result*100) // pulling 비용 계산하는 기능 개발
+			go edge.ImagePulling(&edgeServerList[i], (rand.Intn(100)+1)+result*100)
+
 			if j%500 == 0 {
 				edge.CleanCache(&edgeServerList[i])
 			}
-
 		}
+
+		//for i := 0; i < numOfEdgeServer; i++ {
+		//	weightList := []int{1, 1, 1, 1, 1}
+		//	weightList[i/numOfRegistryServer] = 3
+		//	chooser, _ := weightedrand.NewChooser(
+		//		weightedrand.NewChoice(1, weightList[0]),
+		//		weightedrand.NewChoice(2, weightList[1]),
+		//		weightedrand.NewChoice(3, weightList[2]),
+		//		weightedrand.NewChoice(4, weightList[3]),
+		//		weightedrand.NewChoice(5, weightList[4]),
+		//	)
+		//
+		//	result := chooser.Pick()
+		//	//_ = edge.ImagePulling(&edgeServerList[i], (rand.Intn(100)+1)+result*100) // pulling 비용 계산하는 기능 개발
+		//	go edge.ImagePulling(&edgeServerList[i], (rand.Intn(100)+1)+result*100) // pulling 비용 계산하는 기능 개발
+		//
+		//	if j%500 == 0 {
+		//		edge.CleanCache(&edgeServerList[i])
+		//	}
+		//
+		//}
 
 		if j%managementInterval == 0 {
 
 			// 자원 관리 - no는 일정 수준으로 변화 - 변화 수준이나 원격 레지스트리 서버에 대한 오버헤드는 모티베이션 실험 데이터를 활용
 			// af는 pulling history에 따라 결정됨
-
 			// 2단계 글러스터링 수행 > 1단계 클러스터링 후 리더 2개를 선정하고 엣지마다 레지스트리 서버 2개를 선정
 
 			graph.GenerateRandomGraph(&no, numOfEdgeServer)
 			graph.GenerateAffinityGraph(&af, edgeServerList)
 
-			nsubgraphs := graph.ClusterGraph(&no, 3)
+			nsubgraphs := graph.ClusterGraph(&no, numOfSubgroup)
 			fmt.Println("network overhead graph")
 			graph.PrintGraph(&no)
 			for _, subgraph := range nsubgraphs {
 				fmt.Println("network overhead subgraph")
 				leader := graph.ElectReaderUsingAffinity(&subgraph)
 				graph.PrintGraphUsingReader(&subgraph, leader)
-				firstRegistryServer = edge.CreateEdgeRegistryServer(edgeServerList[leader-1], leader)
+				firstRegistryServer = edge.CreateEdgeRegistryServer(edgeServerList[leader-1], leader, numOfPulling/managementInterval)
 				for index, _ := range edgeServerList {
 					//edge.FirstRegistry = firstRegistryServer
 					for _, line := range no.Lines {
@@ -84,14 +101,14 @@ func ImagePullingSimulation(numOfEdgeServer int, numOfRegistryServer int, numOfP
 				}
 			}
 
-			asubgraphs := graph.ClusterGraph(&af, 3)
+			asubgraphs := graph.ClusterGraph(&af, numOfSubgroup)
 			fmt.Println("affinity graph")
 			graph.PrintGraph(&af)
 			for _, subgraph := range asubgraphs {
 				fmt.Println("affinity subgraph")
 				leader := graph.ElectReaderUsingAffinity(&subgraph)
 				graph.PrintAffinityGraph(&subgraph, leader)
-				secondRegistryServer = edge.CreateEdgeRegistryServer(edgeServerList[leader-1], leader)
+				secondRegistryServer = edge.CreateEdgeRegistryServer(edgeServerList[leader-1], leader, numOfPulling/managementInterval)
 				for index, _ := range edgeServerList {
 					//edge.SecondRegistry = secondRegistryServer
 					for _, line := range af.Lines {

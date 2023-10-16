@@ -1,7 +1,5 @@
 package edge
 
-import "fmt"
-
 var RegistryServerList []RegistryServer
 
 type ContainerImage struct {
@@ -59,29 +57,29 @@ func DownloadImage(s *EdgeServer, img ContainerImage) error {
 	}
 }
 
-func ImagePulling(s *EdgeServer, i int) error {
+func ImagePulling(s *EdgeServer, i int) {
 
-	var err error
+	//var err error
 	s.History = append(s.History, i)
 
 	// non-pulling
 	for _, img := range s.LocalImages {
 		if i == img.Id {
-			fmt.Println("non-pulling")
+			//fmt.Println("non-pulling")
 			s.HitCount++
-			return nil
+			//return nil
 		}
 	}
 
 	// pulling - edge registry server 1
 	for _, img := range s.FirstRegistry.Images {
 		if i == img.Id {
-			fmt.Println("pulling - first edge server :", s.NetworkOverhead)
+			//fmt.Println("pulling - first edge server :", s.NetworkOverhead)
 			s.MissCount++
 			if DownloadImage(s, img) != nil {
-				return nil
+				//return nil
 			} else {
-				return err
+				//return err
 			}
 		}
 	}
@@ -89,12 +87,12 @@ func ImagePulling(s *EdgeServer, i int) error {
 	// pulling - edge registry server 2
 	for _, img := range s.SecondRegistry.Images {
 		if i == img.Id {
-			fmt.Println("pulling - second edge server :", s.AffinityOverhead)
+			//fmt.Println("pulling - second edge server :", s.AffinityOverhead)
 			s.MissCount++
 			if DownloadImage(s, img) != nil {
-				return nil
+				//return nil
 			} else {
-				return err
+				//return err
 			}
 		}
 	}
@@ -103,18 +101,18 @@ func ImagePulling(s *EdgeServer, i int) error {
 	for _, r := range s.RegistryServers {
 		for _, img := range r.Images {
 			if i == img.Id {
-				fmt.Println("pulling - remote registry server:", r.Overhead)
+				//fmt.Println("pulling - remote registry server:", r.Overhead)
 				s.MissCount++
 				if DownloadImage(s, img) != nil {
-					return nil
+					//return nil
 				} else {
-					return err
+					//return err
 				}
 			}
 		}
 	}
 
-	return err
+	//return err
 }
 
 func Init() {
@@ -146,7 +144,7 @@ func InitRegistryServer(rs *RegistryServer, numOfContainer int, sizeOfContainer 
 }
 
 // func CreateEdgeRegistryServer(edgeServerList []EdgeServer, leaderId int) EdgeRegistryServer {
-func CreateEdgeRegistryServer(edgeServer EdgeServer, leaderId int) EdgeRegistryServer {
+func CreateEdgeRegistryServer(edgeServer EdgeServer, leaderId int, numOfImage int) EdgeRegistryServer {
 
 	edgeRegistryServer := EdgeRegistryServer{
 		NodeId:            leaderId,
@@ -154,6 +152,17 @@ func CreateEdgeRegistryServer(edgeServer EdgeServer, leaderId int) EdgeRegistryS
 		CurrentNumOfImage: 0,
 		Images:            nil,
 	}
+
+	//for i := 0; i < numOfImage; i++ {
+	//	img := ContainerImage{
+	//		edgeServer.History[i],
+	//		300,
+	//	}
+	//	if edgeRegistryServer.CurrentNumOfImage < edgeRegistryServer.MaxNumOfImage {
+	//		edgeRegistryServer.Images = append(edgeRegistryServer.Images, img)
+	//		edgeRegistryServer.CurrentNumOfImage++
+	//	}
+	//}
 
 	for _, imageId := range edgeServer.History {
 		img := ContainerImage{

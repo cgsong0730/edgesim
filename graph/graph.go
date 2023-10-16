@@ -1,8 +1,8 @@
 package graph
 
 import (
+	"edgesim/edge"
 	"fmt"
-	"gopro1/edge"
 	"math/rand"
 )
 
@@ -139,11 +139,11 @@ func ClusterGraph(graph *Graph, k int) []Graph {
 	// 클러스터의 수만큼 반복
 	for i := 0; i < k; i++ {
 		subgraph := Graph{}
-		fmt.Println("group", i)
+		//fmt.Println("group", i)
 
 		// 각 클러스터의 노드 수집
 		for j := 1; j <= q; j++ {
-			fmt.Println("value:", i*q+j)
+			//fmt.Println("value:", i*q+j)
 			node := graph.Nodes[i*q+j-1]
 			subgraph.Nodes = append(subgraph.Nodes, node)
 		}
@@ -168,7 +168,7 @@ func ClusterGraph(graph *Graph, k int) []Graph {
 				}
 			} // get node id's lines
 			for l := node.Id - i*q; l < len(subgraph.Nodes); l++ {
-				fmt.Println("node id:", node.Id)
+				//fmt.Println("node id:", node.Id)
 				subgraph.Lines = append(subgraph.Lines, sublines[len(subgraph.Nodes)-l-1])
 			}
 		}
@@ -195,7 +195,7 @@ func ElectReaderUsingOverhead(graph *Graph) int {
 			sum += line.Val
 		}
 		fmt.Println("node", node.Id, "'s graph value:", sum)
-		if minSum > sum {
+		if minSum >= sum {
 			leaderId = node.Id
 			minSum = sum
 		}
@@ -220,7 +220,7 @@ func ElectReaderUsingAffinity(graph *Graph) int {
 			sum += line.Val
 		}
 		//fmt.Println("node", node.Id, "'s graph value:", sum)
-		if maxSum < sum {
+		if maxSum <= sum {
 			leaderId = node.Id
 			maxSum = sum
 		}
