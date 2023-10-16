@@ -79,12 +79,15 @@ func ImagePullingSimulation(numOfEdgeServer int, numOfRegistryServer int, numOfS
 			// af는 pulling history에 따라 결정됨
 			// 2단계 글러스터링 수행 > 1단계 클러스터링 후 리더 2개를 선정하고 엣지마다 레지스트리 서버 2개를 선정
 
-			graph.GenerateRandomGraph(&no, numOfEdgeServer)
+			//graph.GenerateRandomGraph(&no, numOfEdgeServer)
+			graph.GenerateRandomGraphWithNR(&no, numOfEdgeServer)
 			graph.GenerateAffinityGraph(&af, edgeServerList)
-
-			nsubgraphs := graph.ClusterGraph(&no, numOfSubgroup)
 			fmt.Println("network overhead graph")
-			graph.PrintGraph(&no)
+			//graph.PrintGraph(&no)
+			graph.PrintNetworkGraph(&no)
+			no.Nodes = no.Nodes[:len(no.Nodes)-1]
+			nsubgraphs := graph.ClusterGraph(&no, numOfSubgroup)
+
 			for _, subgraph := range nsubgraphs {
 				fmt.Println("network overhead subgraph")
 				leader := graph.ElectReaderUsingAffinity(&subgraph)
@@ -103,7 +106,7 @@ func ImagePullingSimulation(numOfEdgeServer int, numOfRegistryServer int, numOfS
 
 			asubgraphs := graph.ClusterGraph(&af, numOfSubgroup)
 			fmt.Println("affinity graph")
-			graph.PrintGraph(&af)
+			graph.PrintAffinityOverallGraph(&af)
 			for _, subgraph := range asubgraphs {
 				fmt.Println("affinity subgraph")
 				leader := graph.ElectReaderUsingAffinity(&subgraph)

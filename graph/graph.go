@@ -50,17 +50,54 @@ func PrintGraphUsingReader(graph *Graph, nodeId int) {
 	fmt.Println("}")
 }
 
+func PrintNetworkGraph(graph *Graph) {
+	fmt.Println("Graph {")
+	fmt.Printf("  {node [shape=octagon, style=filled,color=green] e%d}\n", len(graph.Nodes)-1)
+	for _, line := range graph.Lines {
+		fmt.Printf("  e%d -- e%d [len = %d, label = \"%d\"] \n", line.NodeA.Id, line.NodeB.Id, line.Val, line.Val)
+	}
+	fmt.Println("}")
+}
+
+func PrintAffinityOverallGraph(graph *Graph) {
+	fmt.Println("Graph {")
+	for _, line := range graph.Lines {
+		fmt.Printf("  e%d -- e%d [len = %d, label = \"%.2f\"] \n", line.NodeA.Id, line.NodeB.Id, line.Val/5, float32(line.Val)/100)
+	}
+	fmt.Println("}")
+}
+
 func PrintAffinityGraph(graph *Graph, nodeId int) {
 	fmt.Println("Graph {")
 	fmt.Printf("  {node [style=filled,color=yellow] e%d}\n", nodeId)
 	for _, line := range graph.Lines {
-		fmt.Printf("  e%d -- e%d [len = %d, label = \"%d\"] \n", line.NodeA.Id, line.NodeB.Id, line.Val/10, line.Val)
+		fmt.Printf("  e%d -- e%d [len = %d, label = \"%.2f\"] \n", line.NodeA.Id, line.NodeB.Id, line.Val/5, float32(line.Val)/100)
 	}
 	fmt.Println("}")
 }
 
 func GenerateRandomGraph(graph *Graph, numOfNode int) {
 
+	cnt := numOfNode - 1
+	randomValue := 0
+	rangeOfValue := 10
+	numOfLine := 1
+
+	for i := 1; i <= numOfNode; i++ {
+		AddNode(graph, i)
+	}
+	for i := 1; i <= numOfNode; i++ {
+		for j := 1; j <= cnt; j++ {
+			randomValue = rand.Intn(rangeOfValue) + 1
+			AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, randomValue)
+			numOfLine++
+		}
+		cnt--
+	}
+}
+
+func GenerateRandomGraphWithNR(graph *Graph, numOfNode int) {
+	numOfNode++
 	cnt := numOfNode - 1
 	randomValue := 0
 	rangeOfValue := 10
@@ -107,7 +144,8 @@ func GenerateAffinityGraph(graph *Graph, edgeServers []edge.EdgeServer) {
 				}
 			}
 			//AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, (int)(hit/(hit+miss))*1000)
-			AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, hit)
+			affinity := float32(hit) / float32(hit+miss) * 100
+			AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, int(affinity*100))
 			//fmt.Println("affinity:", (affinity/numOfPulling)*100, "%")
 			numOfLine++
 		}

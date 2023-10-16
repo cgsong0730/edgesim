@@ -88,6 +88,7 @@ func ImagePulling(s *EdgeServer, i int) {
 	for _, img := range s.SecondRegistry.Images {
 		if i == img.Id {
 			//fmt.Println("pulling - second edge server :", s.AffinityOverhead)
+			//fmt.Println("pulling - second edge server :", s.NetworkOverhead)
 			s.MissCount++
 			if DownloadImage(s, img) != nil {
 				//return nil
