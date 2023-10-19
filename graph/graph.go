@@ -96,12 +96,13 @@ func GenerateRandomGraph(graph *Graph, numOfNode int) {
 	}
 }
 
-func GenerateRandomGraphWithNR(graph *Graph, numOfNode int) {
+func GenerateRandomGraphWithNR(graph *Graph, numOfNode int) []int {
 	numOfNode++
 	cnt := numOfNode - 1
 	randomValue := 0
 	rangeOfValue := 10
 	numOfLine := 1
+	var nearestRouterOverhead []int
 
 	for i := 1; i <= numOfNode; i++ {
 		AddNode(graph, i)
@@ -110,10 +111,14 @@ func GenerateRandomGraphWithNR(graph *Graph, numOfNode int) {
 		for j := 1; j <= cnt; j++ {
 			randomValue = rand.Intn(rangeOfValue) + 1
 			AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, randomValue)
+			if i+j == numOfNode {
+				nearestRouterOverhead = append(nearestRouterOverhead, randomValue)
+			}
 			numOfLine++
 		}
 		cnt--
 	}
+	return nearestRouterOverhead
 }
 
 func GenerateAffinityGraph(graph *Graph, edgeServers []edge.EdgeServer) {
