@@ -1,6 +1,15 @@
 package edge
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
 
 var RegistryServerList []RegistryServer
 
@@ -61,14 +70,27 @@ func DownloadImage(s *EdgeServer, img ContainerImage) error {
 
 func ImagePulling(s *EdgeServer, i int, nr int) {
 
+	var str string
+	var b []byte
+
+	f, err := os.OpenFile("./result.txt", os.O_APPEND|os.O_RDWR, 0755)
+	defer f.Close()
+	check(err)
+
 	//var err error
 	s.History = append(s.History, i)
 
 	// non-pulling
 	for _, img := range s.LocalImages {
 		if i == img.Id {
-			fmt.Println("non-pulling")
+			//fmt.Println("non-pulling")
 			s.HitCount++
+
+			str = fmt.Sprintf("%d\n", 0)
+			b = []byte(str)
+			_, err = f.Write(b)
+			check(err)
+
 			return
 			//return nil
 		}
@@ -77,7 +99,13 @@ func ImagePulling(s *EdgeServer, i int, nr int) {
 	// pulling - edge registry server 1
 	for _, img := range s.FirstRegistry.Images {
 		if i == img.Id {
-			fmt.Println("pulling - first edge server :", s.NetworkOverhead)
+			//fmt.Println("pulling - first edge server :", s.NetworkOverhead)
+
+			str = fmt.Sprintf("%d\n", s.NetworkOverhead)
+			b = []byte(str)
+			_, err = f.Write(b)
+			check(err)
+
 			s.MissCount++
 			if DownloadImage(s, img) != nil {
 				return
@@ -93,7 +121,13 @@ func ImagePulling(s *EdgeServer, i int, nr int) {
 	for _, img := range s.SecondRegistry.Images {
 		if i == img.Id {
 			//fmt.Println("pulling - second edge server :", s.AffinityOverhead)
-			fmt.Println("pulling - second edge server :", s.NetworkOverhead)
+			//fmt.Println("pulling - second edge server :", s.NetworkOverhead)
+
+			str = fmt.Sprintf("%d\n", s.NetworkOverhead)
+			b = []byte(str)
+			_, err = f.Write(b)
+			check(err)
+
 			s.MissCount++
 			if DownloadImage(s, img) != nil {
 				//return nil
@@ -109,7 +143,13 @@ func ImagePulling(s *EdgeServer, i int, nr int) {
 	for _, r := range s.RegistryServers {
 		for _, img := range r.Images {
 			if i == img.Id {
-				fmt.Println("pulling - remote registry server:", r.Overhead+nr)
+				//fmt.Println("pulling - remote registry server:", r.Overhead+nr)
+
+				str = fmt.Sprintf("%d\n", r.Overhead+nr)
+				b = []byte(str)
+				_, err = f.Write(b)
+				check(err)
+
 				s.MissCount++
 				if DownloadImage(s, img) != nil {
 					//return nil
