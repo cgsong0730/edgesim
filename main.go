@@ -27,55 +27,82 @@ func main() {
 		sim.ImagePullingSimulation(10, 5, 3, 43200, 1800, 2)
 		wg.Done()
 	}()
-	go func() {
-		sim.ImagePullingSimulation(10, 5, 3, 86400, 3600, 3)
-		wg.Done()
-	}()
+	//go func() {
+	//	sim.ImagePullingSimulation(10, 5, 3, 86400, 3600, 3)
+	//	wg.Done()
+	//}()
 
 	// NumOfEdgeServer - 20
 	go func() {
 		sim.ImagePullingSimulation(20, 5, 3, 43200, 1800, 1)
 		wg.Done()
 	}()
-	go func() {
-		sim.ImagePullingSimulation(20, 5, 3, 43200, 1800, 2)
-		wg.Done()
-	}()
-	go func() {
-		sim.ImagePullingSimulation(20, 5, 3, 43200, 1800, 3)
-		wg.Done()
-	}()
+	//go func() {
+	//	sim.ImagePullingSimulation(20, 5, 3, 43200, 1800, 2)
+	//	wg.Done()
+	//}()
+	//go func() {
+	//	sim.ImagePullingSimulation(20, 5, 3, 43200, 1800, 3)
+	//	wg.Done()
+	//}()
 
 	// NumOfEdgeServer - 30
-	go func() {
-		sim.ImagePullingSimulation(30, 5, 3, 43200, 1800, 1)
-		wg.Done()
-	}()
-	go func() {
-		sim.ImagePullingSimulation(30, 5, 3, 43200, 1800, 2)
-		wg.Done()
-	}()
-	go func() {
-		sim.ImagePullingSimulation(30, 5, 3, 43200, 1800, 3)
-		wg.Done()
-	}()
+	//go func() {
+	//	sim.ImagePullingSimulation(30, 5, 3, 43200, 1800, 1)
+	//	wg.Done()
+	//}()
+	//go func() {
+	//	sim.ImagePullingSimulation(30, 5, 3, 43200, 1800, 2)
+	//	wg.Done()
+	//}()
+	//go func() {
+	//	sim.ImagePullingSimulation(30, 5, 3, 43200, 1800, 3)
+	//	wg.Done()
+	//}()
 
 	// Experiment 2 - 다양한 서브 그룹의 수 k에 따른 성능
 
 	// k - 5
-	//sim.ImagePullingSimulation(30, 5, 5, 43200, 1800, 1)
-	//sim.ImagePullingSimulation(30, 5, 5, 43200, 1800, 2)
-	//sim.ImagePullingSimulation(30, 5, 5, 43200, 1800, 3)
+	go func() {
+		sim.ImagePullingSimulation(30, 5, 5, 43200, 1800, 1)
+		wg.Done()
+	}()
+	go func() {
+		sim.ImagePullingSimulation(30, 5, 5, 43200, 1800, 2)
+		wg.Done()
+	}()
+	go func() {
+		sim.ImagePullingSimulation(30, 5, 5, 43200, 1800, 3)
+		wg.Done()
+	}()
 
 	// k - 10
-	//sim.ImagePullingSimulation(30, 5, 10, 43200, 1800, 1)
-	//sim.ImagePullingSimulation(30, 5, 10, 43200, 1800, 2)
-	//sim.ImagePullingSimulation(30, 5, 10, 43200, 1800, 3)
+	go func() {
+		sim.ImagePullingSimulation(30, 5, 10, 43200, 1800, 1)
+		wg.Done()
+	}()
+	go func() {
+		sim.ImagePullingSimulation(30, 5, 10, 43200, 1800, 2)
+		wg.Done()
+	}()
+	go func() {
+		sim.ImagePullingSimulation(30, 5, 10, 43200, 1800, 3)
+		wg.Done()
+	}()
 
 	// k - 15
-	//sim.ImagePullingSimulation(30, 5, 15, 43200, 1800, 1)
-	//sim.ImagePullingSimulation(30, 5, 15, 43200, 1800, 2)
-	//sim.ImagePullingSimulation(30, 5, 15, 43200, 1800, 3)
+	go func() {
+		sim.ImagePullingSimulation(30, 5, 15, 43200, 1800, 1)
+		wg.Done()
+	}()
+	go func() {
+		sim.ImagePullingSimulation(30, 5, 15, 43200, 1800, 2)
+		wg.Done()
+	}()
+	go func() {
+		sim.ImagePullingSimulation(30, 5, 15, 43200, 1800, 3)
+		wg.Done()
+	}()
 
 	wg.Wait()
 }
