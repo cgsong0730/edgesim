@@ -1,10 +1,5 @@
 package edge
 
-import (
-	"fmt"
-	"os"
-)
-
 func check(e error) {
 	if e != nil {
 		panic(e)
@@ -68,14 +63,7 @@ func DownloadImage(s *EdgeServer, img ContainerImage) error {
 	}
 }
 
-func ImagePulling(s *EdgeServer, i int, nr int) {
-
-	var str string
-	var b []byte
-
-	f, err := os.OpenFile("./result.txt", os.O_APPEND|os.O_RDWR, 0755)
-	defer f.Close()
-	check(err)
+func ImagePullingB1(s *EdgeServer, i int, nr int) int {
 
 	//var err error
 	s.History = append(s.History, i)
@@ -86,13 +74,59 @@ func ImagePulling(s *EdgeServer, i int, nr int) {
 			//fmt.Println("non-pulling")
 			s.HitCount++
 
-			str = fmt.Sprintf("%d\n", 0)
-			b = []byte(str)
-			_, err = f.Write(b)
-			check(err)
+			//str = fmt.Sprintf("%d\n", 0)
+			//b = []byte(str)
+			//_, err = f.Write(b)
+			//check(err)
 
-			return
-			//return nil
+			return 0
+		}
+	}
+
+	// pulling - retrieves container image from multiple registry servers.
+	for _, r := range s.RegistryServers {
+		for _, img := range r.Images {
+			if i == img.Id {
+				//fmt.Println("pulling - remote registry server:", r.Overhead+nr)
+
+				//str = fmt.Sprintf("%d\n", r.Overhead+nr)
+				//b = []byte(str)
+				//_, err = f.Write(b)
+				//check(err)
+
+				s.MissCount++
+				if DownloadImage(s, img) != nil {
+					//return nil
+					return r.Overhead + nr
+				} else {
+					//return err
+					return r.Overhead + nr
+				}
+			}
+		}
+	}
+
+	//return err
+	return 0
+}
+
+func ImagePullingB2(s *EdgeServer, i int, nr int) int {
+
+	//var err error
+	s.History = append(s.History, i)
+
+	// non-pulling
+	for _, img := range s.LocalImages {
+		if i == img.Id {
+			//fmt.Println("non-pulling")
+			s.HitCount++
+
+			//str = fmt.Sprintf("%d\n", 0)
+			//b = []byte(str)
+			//_, err = f.Write(b)
+			//check(err)
+
+			return 0
 		}
 	}
 
@@ -101,17 +135,85 @@ func ImagePulling(s *EdgeServer, i int, nr int) {
 		if i == img.Id {
 			//fmt.Println("pulling - first edge server :", s.NetworkOverhead)
 
-			str = fmt.Sprintf("%d\n", s.NetworkOverhead)
-			b = []byte(str)
-			_, err = f.Write(b)
-			check(err)
+			//str = fmt.Sprintf("%d\n", s.NetworkOverhead)
+			//b = []byte(str)
+			//_, err = f.Write(b)
+			//check(err)
 
 			s.MissCount++
 			if DownloadImage(s, img) != nil {
-				return
+				return s.NetworkOverhead
 				//return nil
 			} else {
-				return
+				return s.NetworkOverhead
+				//return err
+			}
+		}
+	}
+
+	// pulling - retrieves container image from multiple registry servers.
+	for _, r := range s.RegistryServers {
+		for _, img := range r.Images {
+			if i == img.Id {
+				//fmt.Println("pulling - remote registry server:", r.Overhead+nr)
+
+				//str = fmt.Sprintf("%d\n", r.Overhead+nr)
+				//b = []byte(str)
+				//_, err = f.Write(b)
+				//check(err)
+
+				s.MissCount++
+				if DownloadImage(s, img) != nil {
+					//return nil
+					return r.Overhead + nr
+				} else {
+					//return err
+					return r.Overhead + nr
+				}
+			}
+		}
+	}
+
+	//return err
+	return 0
+}
+
+func ImagePullingB3(s *EdgeServer, i int, nr int) int {
+
+	//var err error
+	s.History = append(s.History, i)
+
+	// non-pulling
+	for _, img := range s.LocalImages {
+		if i == img.Id {
+			//fmt.Println("non-pulling")
+			s.HitCount++
+
+			//str = fmt.Sprintf("%d\n", 0)
+			//b = []byte(str)
+			//_, err = f.Write(b)
+			//check(err)
+
+			return 0
+		}
+	}
+
+	// pulling - edge registry server 1
+	for _, img := range s.FirstRegistry.Images {
+		if i == img.Id {
+			//fmt.Println("pulling - first edge server :", s.NetworkOverhead)
+
+			//str = fmt.Sprintf("%d\n", s.NetworkOverhead)
+			//b = []byte(str)
+			//_, err = f.Write(b)
+			//check(err)
+
+			s.MissCount++
+			if DownloadImage(s, img) != nil {
+				return s.NetworkOverhead
+				//return nil
+			} else {
+				return s.NetworkOverhead
 				//return err
 			}
 		}
@@ -123,18 +225,18 @@ func ImagePulling(s *EdgeServer, i int, nr int) {
 			//fmt.Println("pulling - second edge server :", s.AffinityOverhead)
 			//fmt.Println("pulling - second edge server :", s.NetworkOverhead)
 
-			str = fmt.Sprintf("%d\n", s.NetworkOverhead)
-			b = []byte(str)
-			_, err = f.Write(b)
-			check(err)
+			//str = fmt.Sprintf("%d\n", s.NetworkOverhead)
+			//b = []byte(str)
+			//_, err = f.Write(b)
+			//check(err)
 
 			s.MissCount++
 			if DownloadImage(s, img) != nil {
 				//return nil
-				return
+				return s.NetworkOverhead
 			} else {
 				//return err
-				return
+				return s.NetworkOverhead
 			}
 		}
 	}
@@ -145,24 +247,115 @@ func ImagePulling(s *EdgeServer, i int, nr int) {
 			if i == img.Id {
 				//fmt.Println("pulling - remote registry server:", r.Overhead+nr)
 
-				str = fmt.Sprintf("%d\n", r.Overhead+nr)
-				b = []byte(str)
-				_, err = f.Write(b)
-				check(err)
+				//str = fmt.Sprintf("%d\n", r.Overhead+nr)
+				//b = []byte(str)
+				//_, err = f.Write(b)
+				//check(err)
 
 				s.MissCount++
 				if DownloadImage(s, img) != nil {
 					//return nil
-					return
+					return r.Overhead + nr
 				} else {
 					//return err
-					return
+					return r.Overhead + nr
 				}
 			}
 		}
 	}
 
 	//return err
+	return 0
+}
+
+func ImagePulling(s *EdgeServer, i int, nr int) int {
+
+	//var err error
+	s.History = append(s.History, i)
+
+	// non-pulling
+	for _, img := range s.LocalImages {
+		if i == img.Id {
+			//fmt.Println("non-pulling")
+			s.HitCount++
+
+			//str = fmt.Sprintf("%d\n", 0)
+			//b = []byte(str)
+			//_, err = f.Write(b)
+			//check(err)
+
+			return 0
+		}
+	}
+
+	// pulling - edge registry server 1
+	for _, img := range s.FirstRegistry.Images {
+		if i == img.Id {
+			//fmt.Println("pulling - first edge server :", s.NetworkOverhead)
+
+			//str = fmt.Sprintf("%d\n", s.NetworkOverhead)
+			//b = []byte(str)
+			//_, err = f.Write(b)
+			//check(err)
+
+			s.MissCount++
+			if DownloadImage(s, img) != nil {
+				return s.NetworkOverhead
+				//return nil
+			} else {
+				return s.NetworkOverhead
+				//return err
+			}
+		}
+	}
+
+	// pulling - edge registry server 2
+	for _, img := range s.SecondRegistry.Images {
+		if i == img.Id {
+			//fmt.Println("pulling - second edge server :", s.AffinityOverhead)
+			//fmt.Println("pulling - second edge server :", s.NetworkOverhead)
+
+			//str = fmt.Sprintf("%d\n", s.NetworkOverhead)
+			//b = []byte(str)
+			//_, err = f.Write(b)
+			//check(err)
+
+			s.MissCount++
+			if DownloadImage(s, img) != nil {
+				//return nil
+				return s.NetworkOverhead
+			} else {
+				//return err
+				return s.NetworkOverhead
+			}
+		}
+	}
+
+	// pulling - retrieves container image from multiple registry servers.
+	for _, r := range s.RegistryServers {
+		for _, img := range r.Images {
+			if i == img.Id {
+				//fmt.Println("pulling - remote registry server:", r.Overhead+nr)
+
+				//str = fmt.Sprintf("%d\n", r.Overhead+nr)
+				//b = []byte(str)
+				//_, err = f.Write(b)
+				//check(err)
+
+				s.MissCount++
+				if DownloadImage(s, img) != nil {
+					//return nil
+					return r.Overhead + nr
+				} else {
+					//return err
+					return r.Overhead + nr
+				}
+			}
+		}
+	}
+
+	//return err
+	return 0
 }
 
 func Init() {

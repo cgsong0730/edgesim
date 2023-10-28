@@ -237,7 +237,7 @@ func ElectReaderUsingOverhead(graph *Graph) int {
 		for _, line := range sublines {
 			sum += line.Val
 		}
-		fmt.Println("node", node.Id, "'s graph value:", sum)
+		//fmt.Println("node", node.Id, "'s graph value:", sum)
 		if minSum >= sum {
 			leaderId = node.Id
 			minSum = sum
