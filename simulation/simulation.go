@@ -83,7 +83,7 @@ func getStringSlice(rec map[string]any, key string) ([]string, bool) {
 	return out, true
 }
 
-func ImagePullingSimulationWithFile() {
+func ImagePullingSimulationWithFile(baseLine string, numOfCluster int, numOfNode int, useAffinity bool, useNetworkOverhead bool) {
 
 	var RegistryServerList []edge.RegistryServer
 	var edgeServerList []*edge.EdgeServer
@@ -104,13 +104,46 @@ func ImagePullingSimulationWithFile() {
 	numOfRegistryServer := 5
 	//numOfEdgeServer := 50
 	//numOfPulling := 5
-	numOfPulling := 200
+	numOfPulling := 100 // 200
 
 	weightList := make(map[int][]weightedrand.Choice[int, int], numOfRegistryServer)
 
 	cities := []string{"Aachen", "Augsburg", "Bayreuth", "Berlin", "Bielefeld", "Braunschweig", "Bremen", "Bremerhaven", "Chemnitz", "Darmstadt", "Dortmund", "Dresden", "Duesseldorf", "Erfurt", "Essen", "Flensburg", "Frankfurt", "Freiburg", "Fulda", "Giessen", "Greifswald", "Hamburg", "Hannover", "Kaiserslautern", "Karlsruhe", "Kassel", "Kempten", "Kiel", "Koblenz", "Koeln", "Konstanz", "Leipzig", "Magdeburg", "Mannheim", "Muenchen", "Muenster", "Norden", "Nuernberg", "Oldenburg", "Osnabrueck", "Passau", "Regensburg", "Saarbruecken", "Schwerin", "Siegen", "Stuttgart", "Trier", "Ulm", "Wesel", "Wuerzburg"}
-	clustersFilePath := "mkrp-c-5.txt"
-	leadersFilePath := "mkrp-l-5.txt"
+
+	var clustersFilePath string
+	var leadersFilePath string
+
+	var file *os.File
+	fineName := "./result.txt"
+
+	if baseLine == "mkrp" {
+
+		if numOfCluster == 5 {
+			clustersFilePath = "mkrp-c-5.txt"
+			leadersFilePath = "mkrp-l-5.txt"
+		} else if numOfCluster == 10 {
+			clustersFilePath = "mkrp-c-10.txt"
+			leadersFilePath = "mkrp-l-10.txt"
+		} else if numOfCluster == 15 {
+			clustersFilePath = "mkrp-c-15.txt"
+			leadersFilePath = "mkrp-l-15.txt"
+		}
+
+	} else if baseLine == "comm" {
+
+		if numOfCluster == 5 {
+			clustersFilePath = "comm-c-5.txt"
+			leadersFilePath = "comm-l-5.txt"
+		} else if numOfCluster == 10 {
+			clustersFilePath = "comm-c-10.txt"
+			leadersFilePath = "comm-l-10.txt"
+		} else if numOfCluster == 15 {
+			clustersFilePath = "mkrp-c-15.txt"
+			leadersFilePath = "mkrp-l-15.txt"
+		}
+
+	}
+
 	//clustersFilePath := "comm-c-5.txt"
 	//leadersFilePath := "comm-l-5.txt"
 
@@ -389,7 +422,7 @@ func ImagePullingSimulationWithFile() {
 				//pullingTime := edge.ImagePullingWithData(edgeServer, j, 0)
 
 				requestId := rand.Intn(100) + 1 + (result-1)*100
-				pullingTime, pullingType := edge.ImagePullingWithData(edgeServer, requestId, 100)
+				pullingTime, pullingType := edge.ImagePullingWithData(edgeServer, requestId, useAffinity, useNetworkOverhead)
 				//fmt.Printf("pullTime: %.2f %d \n", pullingTime, pullingType)
 
 				if !math.IsInf(pullingTime, 0) {
@@ -440,6 +473,20 @@ func ImagePullingSimulationWithFile() {
 
 	fmt.Printf("errorCnt: %f \n", (errorCnt/(cnt+errorCnt))*100)
 
+	file, _ = os.OpenFile(fineName, os.O_APPEND|os.O_RDWR, 0755)
+	_, ferr := os.Stat(fineName)
+
+	if os.IsNotExist(ferr) {
+		file, _ = os.Create(fineName)
+	} else {
+		file, _ = os.OpenFile(fineName, os.O_APPEND|os.O_RDWR, 0755)
+	}
+
+	// baseLine string, numOfCluster int, numOfNode int, useAffinity bool, useNetworkOverhead bool
+	str := fmt.Sprintf("%s \t %d \t %d \t %t \t %t \t %.2f \n", baseLine, numOfCluster, numOfNode, useAffinity, useNetworkOverhead, avg)
+	b := []byte(str)
+	_, err = file.Write(b)
+	check(err)
 }
 
 //func ImagePullingSimulationWithNetworkx(numOfEdgeServer int, numOfRegistryServer int, numOfSubgroup int, numOfPulling int, managementInterval int, baseLine int) {

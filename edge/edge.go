@@ -363,7 +363,7 @@ func DownloadImage(s *EdgeServer, img ContainerImage) {
 //	return 0
 //}
 
-func ImagePullingWithData(s *EdgeServer, i int, numOfPulling int) (float64, int) {
+func ImagePullingWithData(s *EdgeServer, i int, useAffinity bool, useNetworkOverhead bool) (float64, int) {
 
 	s.History = append(s.History, i)
 
@@ -376,20 +376,24 @@ func ImagePullingWithData(s *EdgeServer, i int, numOfPulling int) (float64, int)
 	}
 
 	// pulling - edge registry server 1
-	for _, img := range s.FirstRegistry.Images {
-		if i == img.Id {
-			s.MissCount++
-			DownloadImage(s, img)
-			return float64(img.Size) / s.FirstRegistryBandwidth, 1
+	if useNetworkOverhead {
+		for _, img := range s.FirstRegistry.Images {
+			if i == img.Id {
+				s.MissCount++
+				DownloadImage(s, img)
+				return float64(img.Size) / s.FirstRegistryBandwidth, 1
+			}
 		}
 	}
 
 	// pulling - edge registry server 2
-	for _, img := range s.SecondRegistry.Images {
-		if i == img.Id {
-			s.MissCount++
-			DownloadImage(s, img)
-			return float64(img.Size) / s.SecondRegistryBandwidth, 2
+	if useAffinity {
+		for _, img := range s.SecondRegistry.Images {
+			if i == img.Id {
+				s.MissCount++
+				DownloadImage(s, img)
+				return float64(img.Size) / s.SecondRegistryBandwidth, 2
+			}
 		}
 	}
 
