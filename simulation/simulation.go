@@ -104,7 +104,7 @@ func ImagePullingSimulationWithFile(baseLine string, numOfCluster int, numOfNode
 	numOfRegistryServer := 5
 	//numOfEdgeServer := 50
 	//numOfPulling := 5
-	numOfPulling := 100 // 200
+	numOfPulling := 200 // 200
 
 	weightList := make(map[int][]weightedrand.Choice[int, int], numOfRegistryServer)
 
