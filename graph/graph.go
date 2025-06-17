@@ -4,30 +4,45 @@ import (
 	"edgesim/edge"
 	"fmt"
 	"math/rand"
+	"strconv"
 )
 
 type Node struct {
-	Id int
+	Id string
 }
 
 type Line struct {
 	Id    int
-	Val   int
+	Val   float64
 	NodeA *Node
 	NodeB *Node
 }
 
 type Graph struct {
+	Id    string
 	Lines []Line
 	Nodes []Node
 }
 
-func AddNode(graph *Graph, id int) {
+func AddNode(graph *Graph, id string) {
 	var node Node = Node{id}
 	graph.Nodes = append(graph.Nodes, node)
 }
 
-func AddLine(graph *Graph, nodeA *Node, nodeB *Node, id int, val int) {
+func FindNodeById(graph *Graph, id string) *Node {
+
+	var returnNode *Node
+	for _, node := range graph.Nodes {
+		if node.Id == id {
+			returnNode = &node
+			return returnNode
+		}
+	}
+	return returnNode
+
+}
+
+func AddLine(graph *Graph, nodeA *Node, nodeB *Node, id int, val float64) {
 	var line Line = Line{id, val, nodeA, nodeB}
 	graph.Lines = append(graph.Lines, line)
 }
@@ -36,7 +51,7 @@ func PrintGraph(graph *Graph) {
 	fmt.Println("Graph {")
 
 	for _, line := range graph.Lines {
-		fmt.Printf("  e%d -- e%d [len = %d, label = \"%d\"] \n", line.NodeA.Id, line.NodeB.Id, line.Val, line.Val)
+		fmt.Printf("  %s -- %s [len = %d, label = \"%d\"] \n", line.NodeA.Id, line.NodeB.Id, line.Val, line.Val)
 	}
 	fmt.Println("}")
 }
@@ -67,11 +82,11 @@ func PrintAffinityOverallGraph(graph *Graph) {
 	fmt.Println("}")
 }
 
-func PrintAffinityGraph(graph *Graph, nodeId int) {
+func PrintAffinityGraph(graph *Graph, nodeId string) {
 	fmt.Println("Graph {")
-	fmt.Printf("  {node [style=filled,color=yellow] e%d}\n", nodeId)
+	fmt.Printf("  {node [style=filled,color=yellow] e%s}\n", nodeId)
 	for _, line := range graph.Lines {
-		fmt.Printf("  e%d -- e%d [len = %d, label = \"%.2f\"] \n", line.NodeA.Id, line.NodeB.Id, line.Val/5, float32(line.Val)/100)
+		fmt.Printf("  %s -- %s [len = %f, label = \" %.2f\"] \n", line.NodeA.Id, line.NodeB.Id, line.Val/5, line.Val)
 	}
 	fmt.Println("}")
 }
@@ -84,12 +99,12 @@ func GenerateRandomGraph(graph *Graph, numOfNode int) {
 	numOfLine := 1
 
 	for i := 1; i <= numOfNode; i++ {
-		AddNode(graph, i)
+		AddNode(graph, strconv.Itoa(i))
 	}
 	for i := 1; i <= numOfNode; i++ {
 		for j := 1; j <= cnt; j++ {
 			randomValue = rand.Intn(rangeOfValue) + 1
-			AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, randomValue)
+			AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, float64(randomValue))
 			numOfLine++
 		}
 		cnt--
@@ -105,12 +120,12 @@ func GenerateRandomGraphWithNR(graph *Graph, numOfNode int) []int {
 	var nearestRouterOverhead []int
 
 	for i := 1; i <= numOfNode; i++ {
-		AddNode(graph, i)
+		AddNode(graph, strconv.Itoa(i))
 	}
 	for i := 1; i <= numOfNode; i++ {
 		for j := 1; j <= cnt; j++ {
 			randomValue = rand.Intn(rangeOfValue) + 1
-			AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, randomValue)
+			AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, float64(randomValue))
 			if i+j == numOfNode {
 				nearestRouterOverhead = append(nearestRouterOverhead, randomValue)
 			}
@@ -121,47 +136,81 @@ func GenerateRandomGraphWithNR(graph *Graph, numOfNode int) []int {
 	return nearestRouterOverhead
 }
 
-func GenerateAffinityGraph(graph *Graph, edgeServers []edge.EdgeServer) {
-	numOfEdge := len(edgeServers)
-	numOfLine := 1
-	cnt := numOfEdge - 1
+func findNodeById(graph *Graph, Id string) *Node {
+	for _, node := range graph.Nodes {
+		if node.Id == Id {
+			return &node
+		}
+	}
+	return nil
+}
+
+func GenerateAffinityGraph(graph *Graph, edgeServers []*edge.EdgeServer) {
 	hit := 0
 	miss := 0
-	numOfPulling := 0
-
-	for i := 1; i <= numOfEdge; i++ {
-		AddNode(graph, i)
+	var affinity float64
+	for _, edgeServer := range edgeServers {
+		AddNode(graph, edgeServer.Name)
 	}
-	for i := 1; i <= numOfEdge; i++ { // 1부터 numOfEdge 까지의 합
-		for j := 1; j <= cnt; j++ {
-			for _, startId := range edgeServers[i-1].History {
-				hit = 0
-				miss = 0
-				numOfPulling = 0
-				for _, endId := range edgeServers[i+j-1].History {
-					numOfPulling++
-					if startId == endId {
-						hit++
-					} else {
-						miss++
-					}
 
+	var nodeA, nodeB *Node
+	for i, edgeServerA := range edgeServers {
+		nodeA = findNodeById(graph, edgeServerA.Name)
+		for _, edgeServerB := range edgeServers {
+			nodeB = findNodeById(graph, edgeServerB.Name)
+			if edgeServerA.Id != edgeServerB.Id {
+				for _, imgIdA := range edgeServerA.History {
+					for _, imgIdB := range edgeServerB.History {
+						if imgIdA == imgIdB {
+							hit++
+						} else {
+							miss++
+						}
+					}
 				}
 			}
-			//AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, (int)(hit/(hit+miss))*1000)
-			affinity := float32(hit) / float32(hit+miss) * 100
-			AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, int(affinity*100))
-			//fmt.Println("affinity:", (affinity/numOfPulling)*100, "%")
-			numOfLine++
+			if hit != 0 && miss != 0 {
+				affinity = (float64(hit) / (float64(hit) + float64(miss))) * 100
+			} else {
+				affinity = 0
+			}
+
+			AddLine(graph, nodeA, nodeB, i, affinity)
+			hit = 0
+			miss = 0
+			affinity = 0
 		}
-		cnt--
 	}
+	//for i := 1; i <= numOfEdge; i++ { // 1부터 numOfEdge 까지의 합
+	//	for j := 1; j <= cnt; j++ {
+	//		for _, startId := range edgeServers[i-1].History {
+	//			hit = 0
+	//			miss = 0
+	//			numOfPulling = 0
+	//			for _, endId := range edgeServers[i+j-1].History {
+	//				numOfPulling++
+	//				if startId == endId {
+	//					hit++
+	//				} else {
+	//					miss++
+	//				}
+	//
+	//			}
+	//		}
+	//		//AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, (int)(hit/(hit+miss))*1000)
+	//		affinity := float32(hit) / float32(hit+miss) * 100
+	//		AddLine(graph, &graph.Nodes[i-1], &graph.Nodes[i+j-1], numOfLine, float64(affinity*100))
+	//		//fmt.Println("affinity:", (affinity/numOfPulling)*100, "%")
+	//		numOfLine++
+	//	}
+	//	cnt--
+	//}
 }
 
 func SumOfVal(graph *Graph) int {
 	sum := 0
 	for _, line := range graph.Lines {
-		sum += line.Val
+		sum += int(line.Val)
 	}
 	return sum
 }
@@ -210,9 +259,14 @@ func ClusterGraph(graph *Graph, k int) []Graph {
 					sublines = append(sublines, line)
 				}
 			} // get node id's lines
-			for l := node.Id - i*q; l < len(subgraph.Nodes); l++ {
+			nodeId, err := strconv.ParseInt(node.Id, 10, 64)
+			if err != nil {
+				panic(err) // 또는 log.Fatal(err), panic(err) …
+			}
+
+			for l := nodeId - int64(i*q); l < int64(len(subgraph.Nodes)); l++ {
 				//fmt.Println("node id:", node.Id)
-				subgraph.Lines = append(subgraph.Lines, sublines[len(subgraph.Nodes)-l-1])
+				subgraph.Lines = append(subgraph.Lines, sublines[int64(len(subgraph.Nodes))-l-1])
 			}
 		}
 
@@ -221,9 +275,9 @@ func ClusterGraph(graph *Graph, k int) []Graph {
 	return graphs
 }
 
-func ElectReaderUsingOverhead(graph *Graph) int {
+func ElectReaderUsingOverhead(graph *Graph) string {
 
-	leaderId := 0
+	var leaderId string
 	minSum := 1000000
 
 	for _, node := range graph.Nodes {
@@ -235,7 +289,7 @@ func ElectReaderUsingOverhead(graph *Graph) int {
 			}
 		}
 		for _, line := range sublines {
-			sum += line.Val
+			sum += int(line.Val)
 		}
 		//fmt.Println("node", node.Id, "'s graph value:", sum)
 		if minSum >= sum {
@@ -246,14 +300,18 @@ func ElectReaderUsingOverhead(graph *Graph) int {
 	return leaderId
 }
 
-func ElectReaderUsingAffinity(graph *Graph) int {
+func ElectReaderUsingAffinity(graph *Graph) string {
 
-	leaderId := 0
-	maxSum := 0
+	var leaderId string
+	var maxSum float64
+	maxSum = 0
 
 	for _, node := range graph.Nodes {
 		sublines := []Line{}
-		sum := 0
+		var sum float64
+		sum = 0
+
+		leaderId = node.Id
 		for _, line := range graph.Lines {
 			if node.Id == line.NodeA.Id || node.Id == line.NodeB.Id {
 				sublines = append(sublines, line)
