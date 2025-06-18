@@ -16,52 +16,52 @@ func main() {
 	wg.Add(10) // num of sim
 
 	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 10, true, true)
+		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 10, false, true)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 20, true, true)
+		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 20, false, true)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 30, true, true)
+		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 30, false, true)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 40, true, true)
+		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 40, false, true)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 50, true, true)
+		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 50, false, true)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 10, false, true)
+		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 10, false, false)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 20, false, true)
+		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 20, false, false)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 30, false, true)
+		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 30, false, false)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 40, false, true)
+		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 40, false, false)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 50, false, true)
+		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 50, false, false)
 		wg.Done()
 	}()
 
