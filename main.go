@@ -13,7 +13,7 @@ func main() {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	wg := new(sync.WaitGroup)
-	wg.Add(1) // num of sim
+	wg.Add(10) // num of sim
 
 	go func() {
 		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 10, true, true)
