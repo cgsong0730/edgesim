@@ -766,7 +766,7 @@ func ImagePullingSimulationWithRandomGraph(baseLine string, numOfCluster int, nu
 	//for i := 0; i < 288; i++ {
 	//for i := 0; i < 96; i++ {
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 96; i++ {
 
 		fmt.Printf("recored: %d \n", i)
 
