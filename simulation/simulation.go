@@ -67,6 +67,25 @@ func getString(rec map[string]any, key string) (string, bool) {
 	return s, ok
 }
 
+func getInt(rec map[string]any, key string) (int, bool) {
+	v, ok := rec[key]
+	if !ok {
+		return 0, false // 키가 존재하지 않으면 실패
+	}
+
+	i, ok := v.(int)
+	return i, ok // 값이 int형일 경우 반환, 아니면 실패
+}
+
+func getFloat64(rec map[string]any, key string) (float64, bool) {
+	v, ok := rec[key]
+	if !ok {
+		return 0.0, false
+	}
+	f, ok := v.(float64)
+	return f, ok
+}
+
 func getStringSlice(rec map[string]any, key string) ([]string, bool) {
 	raw, ok := rec[key].([]any)
 	if !ok {
@@ -76,6 +95,22 @@ func getStringSlice(rec map[string]any, key string) ([]string, bool) {
 	for _, v := range raw {
 		if s, ok := v.(string); ok {
 			out = append(out, s)
+		} else {
+			return nil, false // 타입 섞여 있으면 실패 처리
+		}
+	}
+	return out, true
+}
+
+func getFloatSlice(rec map[string]any, key string) ([]string, bool) {
+	raw, ok := rec[key].([]any)
+	if !ok {
+		return nil, false
+	}
+	out := make([]string, 0, len(raw))
+	for _, v := range raw {
+		if s, ok := v.(float64); ok {
+			out = append(out, strconv.FormatFloat(s, 'f', 0, 64))
 		} else {
 			return nil, false // 타입 섞여 있으면 실패 처리
 		}
@@ -508,7 +543,7 @@ func ImagePullingSimulationWithRandomGraph(baseLine string, numOfCluster int, nu
 	wrecordList := make(map[int][]WeightOfTwoNode)
 
 	numOfRegistryServer := 5
-	numOfEdgeServer := 10
+	numOfEdgeServer := numOfNode
 	//numOfPulling := 5
 	numOfPulling := 200 // 200
 
@@ -660,9 +695,9 @@ func ImagePullingSimulationWithRandomGraph(baseLine string, numOfCluster int, nu
 	for i, rec := range lRecords {
 		var lc LeaderOfCluster
 		for k := range rec {
-			if city, ok := getString(rec, k); ok {
+			if id, ok := getFloat64(rec, k); ok {
 				lc.Id = k
-				lc.Leader = city
+				lc.Leader = strconv.FormatFloat(id, 'f', 0, 64)
 			}
 			ll = append(ll, lc)
 		}
@@ -679,7 +714,7 @@ func ImagePullingSimulationWithRandomGraph(baseLine string, numOfCluster int, nu
 		for k := range rec {
 			var subgraph graph.Graph
 			subgraph.Id = k
-			if tags, ok := getStringSlice(rec, k); ok {
+			if tags, ok := getFloatSlice(rec, k); ok {
 				for _, tag := range tags {
 					graph.AddNode(&subgraph, tag)
 				}
@@ -729,7 +764,9 @@ func ImagePullingSimulationWithRandomGraph(baseLine string, numOfCluster int, nu
 	errorCnt := float64(0)
 
 	//for i := 0; i < 288; i++ {
-	for i := 0; i < 96; i++ {
+	//for i := 0; i < 96; i++ {
+
+	for i := 0; i < 10; i++ {
 
 		fmt.Printf("recored: %d \n", i)
 

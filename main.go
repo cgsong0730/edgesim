@@ -13,57 +13,57 @@ func main() {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	wg := new(sync.WaitGroup)
-	wg.Add(10) // num of sim
-
-	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 10, true, true)
-		wg.Done()
-	}()
-
-	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 20, true, true)
-		wg.Done()
-	}()
-
-	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 30, true, true)
-		wg.Done()
-	}()
-
-	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 40, true, true)
-		wg.Done()
-	}()
+	wg.Add(1) // num of sim
 
 	go func() {
 		simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 50, true, true)
 		wg.Done()
 	}()
 
-	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 10, false, true)
-		wg.Done()
-	}()
-
-	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 20, false, true)
-		wg.Done()
-	}()
-
-	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 30, false, true)
-		wg.Done()
-	}()
-
-	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 40, false, true)
-		wg.Done()
-	}()
-
-	go func() {
-		simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 50, false, true)
-		wg.Done()
-	}()
+	//go func() {
+	//	simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 20, true, true)
+	//	wg.Done()
+	//}()
+	//
+	//go func() {
+	//	simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 30, true, true)
+	//	wg.Done()
+	//}()
+	//
+	//go func() {
+	//	simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 40, true, true)
+	//	wg.Done()
+	//}()
+	//
+	//go func() {
+	//	simulation.ImagePullingSimulationWithRandomGraph("mkrp", 3, 50, true, true)
+	//	wg.Done()
+	//}()
+	//
+	//go func() {
+	//	simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 10, false, true)
+	//	wg.Done()
+	//}()
+	//
+	//go func() {
+	//	simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 20, false, true)
+	//	wg.Done()
+	//}()
+	//
+	//go func() {
+	//	simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 30, false, true)
+	//	wg.Done()
+	//}()
+	//
+	//go func() {
+	//	simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 40, false, true)
+	//	wg.Done()
+	//}()
+	//
+	//go func() {
+	//	simulation.ImagePullingSimulationWithRandomGraph("comm", 3, 50, false, true)
+	//	wg.Done()
+	//}()
 
 	//go func() {
 	//	// baseLine string, useAffinity bool, numOfCluster int, numOfNode int
