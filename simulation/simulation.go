@@ -139,7 +139,7 @@ func ImagePullingSimulationWithFile(baseLine string, numOfCluster int, numOfNode
 	numOfRegistryServer := 5
 	//numOfEdgeServer := 50
 	//numOfPulling := 5
-	numOfPulling := 200 // 200
+	numOfPulling := 10 // 200
 
 	weightList := make(map[int][]weightedrand.Choice[int, int], numOfRegistryServer)
 
@@ -154,27 +154,27 @@ func ImagePullingSimulationWithFile(baseLine string, numOfCluster int, numOfNode
 	if baseLine == "mkrp" {
 
 		if numOfCluster == 5 {
-			clustersFilePath = "mkrp-c-5.txt"
-			leadersFilePath = "mkrp-l-5.txt"
+			clustersFilePath = "data/mkrp-c-5.txt"
+			leadersFilePath = "data/mkrp-l-5.txt"
 		} else if numOfCluster == 10 {
-			clustersFilePath = "mkrp-c-10.txt"
-			leadersFilePath = "mkrp-l-10.txt"
+			clustersFilePath = "data/mkrp-c-10.txt"
+			leadersFilePath = "data/mkrp-l-10.txt"
 		} else if numOfCluster == 15 {
-			clustersFilePath = "mkrp-c-15.txt"
-			leadersFilePath = "mkrp-l-15.txt"
+			clustersFilePath = "data/mkrp-c-15.txt"
+			leadersFilePath = "data/mkrp-l-15.txt"
 		}
 
 	} else if baseLine == "comm" {
 
 		if numOfCluster == 5 {
-			clustersFilePath = "comm-c-5.txt"
-			leadersFilePath = "comm-l-5.txt"
+			clustersFilePath = "data/comm-c-5.txt"
+			leadersFilePath = "data/comm-l-5.txt"
 		} else if numOfCluster == 10 {
-			clustersFilePath = "comm-c-10.txt"
-			leadersFilePath = "comm-l-10.txt"
+			clustersFilePath = "data/comm-c-10.txt"
+			leadersFilePath = "data/comm-l-10.txt"
 		} else if numOfCluster == 15 {
-			clustersFilePath = "mkrp-c-15.txt"
-			leadersFilePath = "mkrp-l-15.txt"
+			clustersFilePath = "data/mkrp-c-15.txt"
+			leadersFilePath = "data/mkrp-l-15.txt"
 		}
 
 	}
@@ -223,7 +223,7 @@ func ImagePullingSimulationWithFile(baseLine string, numOfCluster int, numOfNode
 
 	// parsing weight file
 	for i := 0; i < 288; i++ {
-		nweightsFilePath = "weights/weight-" + strconv.Itoa(i+1) + ".txt"
+		nweightsFilePath = "data/weights/w-" + strconv.Itoa(i+1) + ".txt"
 		var wn WeightOfTwoNode
 		f, err := os.Open(nweightsFilePath) // 예: 위 데이터를 저장한 파일
 		if err != nil {
@@ -560,39 +560,39 @@ func ImagePullingSimulationWithRandomGraph(baseLine string, numOfCluster int, nu
 	if baseLine == "mkrp" {
 
 		if numOfNode == 10 {
-			clustersFilePath = "mkrp-rand-c-10.txt"
-			leadersFilePath = "mkrp-rand-l-10.txt"
+			clustersFilePath = "data/mkrp-rand-c-10.txt"
+			leadersFilePath = "data/mkrp-rand-l-10.txt"
 		} else if numOfNode == 20 {
-			clustersFilePath = "mkrp-rand-c-20.txt"
-			leadersFilePath = "mkrp-rand-l-20.txt"
+			clustersFilePath = "data/mkrp-rand-c-20.txt"
+			leadersFilePath = "data/mkrp-rand-l-20.txt"
 		} else if numOfNode == 30 {
-			clustersFilePath = "mkrp-rand-c-30.txt"
-			leadersFilePath = "mkrp-rand-l-30.txt"
+			clustersFilePath = "data/mkrp-rand-c-30.txt"
+			leadersFilePath = "data/mkrp-rand-l-30.txt"
 		} else if numOfNode == 40 {
-			clustersFilePath = "mkrp-rand-c-40.txt"
-			leadersFilePath = "mkrp-rand-l-40.txt"
+			clustersFilePath = "data/mkrp-rand-c-40.txt"
+			leadersFilePath = "data/mkrp-rand-l-40.txt"
 		} else if numOfNode == 50 {
-			clustersFilePath = "mkrp-rand-c-50.txt"
-			leadersFilePath = "mkrp-rand-l-50.txt"
+			clustersFilePath = "data/mkrp-rand-c-50.txt"
+			leadersFilePath = "data/mkrp-rand-l-50.txt"
 		}
 
 	} else if baseLine == "comm" {
 
 		if numOfNode == 10 {
-			clustersFilePath = "comm-rand-c-10.txt"
-			leadersFilePath = "comm-rand-l-10.txt"
+			clustersFilePath = "data/comm-rand-c-10.txt"
+			leadersFilePath = "data/comm-rand-l-10.txt"
 		} else if numOfNode == 20 {
-			clustersFilePath = "comm-rand-c-20.txt"
-			leadersFilePath = "comm-rand-l-20.txt"
+			clustersFilePath = "data/comm-rand-c-20.txt"
+			leadersFilePath = "data/comm-rand-l-20.txt"
 		} else if numOfNode == 30 {
-			clustersFilePath = "comm-rand-c-30.txt"
-			leadersFilePath = "comm-rand-l-30.txt"
+			clustersFilePath = "data/comm-rand-c-30.txt"
+			leadersFilePath = "data/comm-rand-l-30.txt"
 		} else if numOfNode == 40 {
-			clustersFilePath = "comm-rand-c-40.txt"
-			leadersFilePath = "comm-rand-l-40.txt"
+			clustersFilePath = "data/comm-rand-c-40.txt"
+			leadersFilePath = "data/comm-rand-l-40.txt"
 		} else if numOfNode == 50 {
-			clustersFilePath = "comm-rand-c-50.txt"
-			leadersFilePath = "comm-rand-l-50.txt"
+			clustersFilePath = "data/comm-rand-c-50.txt"
+			leadersFilePath = "data/comm-rand-l-50.txt"
 		}
 
 	}
