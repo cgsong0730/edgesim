@@ -153,29 +153,42 @@ func ImagePullingSimulationWithFile(baseLine string, numOfCluster int, numOfNode
 
 	if baseLine == "mkrp" {
 
-		if numOfCluster == 5 {
-			clustersFilePath = "data/mkrp-c-5.txt"
-			leadersFilePath = "data/mkrp-l-5.txt"
-		} else if numOfCluster == 10 {
-			clustersFilePath = "data/mkrp-c-10.txt"
-			leadersFilePath = "data/mkrp-l-10.txt"
-		} else if numOfCluster == 15 {
-			clustersFilePath = "data/mkrp-c-15.txt"
-			leadersFilePath = "data/mkrp-l-15.txt"
-		}
+		nstr := strconv.Itoa(numOfCluster)
+		clustersFilePath = "data/mkrp-c-" + nstr + ".txt"
+		leadersFilePath = "data/mkrp-l-" + nstr + ".txt"
+
+		//if numOfCluster == 5 {
+		//	clustersFilePath = "data/mkrp-c-5.txt"
+		//	leadersFilePath = "data/mkrp-l-5.txt"
+		//} else if numOfCluster == 10 {
+		//	clustersFilePath = "data/mkrp-c-10.txt"
+		//	leadersFilePath = "data/mkrp-l-10.txt"
+		//} else if numOfCluster == 15 {
+		//	clustersFilePath = "data/mkrp-c-15.txt"
+		//	leadersFilePath = "data/mkrp-l-15.txt"
+		//}
 
 	} else if baseLine == "comm" {
 
-		if numOfCluster == 5 {
-			clustersFilePath = "data/comm-c-5.txt"
-			leadersFilePath = "data/comm-l-5.txt"
-		} else if numOfCluster == 10 {
-			clustersFilePath = "data/comm-c-10.txt"
-			leadersFilePath = "data/comm-l-10.txt"
-		} else if numOfCluster == 15 {
-			clustersFilePath = "data/mkrp-c-15.txt"
-			leadersFilePath = "data/mkrp-l-15.txt"
-		}
+		nstr := strconv.Itoa(numOfCluster)
+		clustersFilePath = "data/comm-c-" + nstr + ".txt"
+		leadersFilePath = "data/comm-l-" + nstr + ".txt"
+
+		//if numOfCluster == 5 {
+		//	clustersFilePath = "data/comm-c-5.txt"
+		//	leadersFilePath = "data/comm-l-5.txt"
+		//} else if numOfCluster == 10 {
+		//	clustersFilePath = "data/comm-c-10.txt"
+		//	leadersFilePath = "data/comm-l-10.txt"
+		//} else if numOfCluster == 15 {
+		//	clustersFilePath = "data/mkrp-c-15.txt"
+		//	leadersFilePath = "data/mkrp-l-15.txt"
+		//}
+
+	} else if baseLine == "snrp" {
+		nstr := strconv.Itoa(numOfCluster)
+		clustersFilePath = "data/snrp-c-" + nstr + ".txt"
+		leadersFilePath = "data/snrp-l-" + nstr + ".txt"
 
 	}
 

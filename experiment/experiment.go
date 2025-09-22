@@ -109,3 +109,130 @@ func SecondExperiment() {
 
 	wg.Wait()
 }
+
+func ThirdExperiment() {
+
+	// 60 * 60 * 24 -> 86400, 3600
+	numOfSim := 23
+
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	wg := new(sync.WaitGroup)
+	wg.Add(numOfSim) // num of sim
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 3, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 4, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 5, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 6, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 7, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 8, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 9, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 10, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 11, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 12, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 13, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 14, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 15, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 16, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 17, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 18, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 19, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 20, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 21, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 22, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 23, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 24, 50, false, false)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("snrp", 25, 50, false, false)
+		wg.Done()
+	}()
+
+	wg.Wait()
+}

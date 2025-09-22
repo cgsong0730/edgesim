@@ -5,6 +5,7 @@ import "edgesim/experiment"
 func main() {
 
 	//experiment.FirstExperiment()
-	experiment.SecondExperiment()
+	//experiment.SecondExperiment()
 
+	experiment.ThirdExperiment()
 }
