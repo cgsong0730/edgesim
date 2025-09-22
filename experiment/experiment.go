@@ -31,17 +31,17 @@ func FirstExperiment() {
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithFile("comm", 5, 50, true, true)
+		simulation.ImagePullingSimulationWithFile("comm", 5, 50, false, false)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithFile("comm", 10, 50, true, true)
+		simulation.ImagePullingSimulationWithFile("comm", 10, 50, false, false)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithFile("comm", 15, 50, true, true)
+		simulation.ImagePullingSimulationWithFile("comm", 15, 50, false, false)
 		wg.Done()
 	}()
 

@@ -1,0 +1,20 @@
+comm 	 15 	 50 	 false 	 false 	 8.45
+comm 	 10 	 50 	 false 	 false 	 8.82 
+comm 	 5 	     50 	 false 	 false 	 8.64
+mkrp 	 15 	 50 	 false 	 false 	 9.36
+mkrp 	 10 	 50 	 false 	 false 	 8.44
+mkrp 	 5 	     50 	 false 	 false 	 9.33
+
+comm 	 15 	 50 	 false 	 true 	 8.69
+comm 	 10 	 50 	 false 	 true 	 8.77
+comm 	 5 	     50 	 false 	 true 	 9.09
+mkrp 	 15 	 50 	 false 	 true 	 9.40
+mkrp 	 10 	 50 	 false 	 true 	 8.43
+mkrp 	 5 	     50 	 false 	 true 	 8.67
+
+comm 	 15 	 50 	 true 	 true 	 8.37
+comm 	 10 	 50 	 true 	 true 	 7.86
+comm 	 5 	     50 	 true 	 true 	 8.18
+mkrp 	 15 	 50 	 true 	 true 	 8.56
+mkrp 	 10 	 50 	 true 	 true 	 8.74
+mkrp 	 5 	     50 	 true 	 true 	 8.29
