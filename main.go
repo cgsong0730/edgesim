@@ -4,8 +4,7 @@ import "edgesim/experiment"
 
 func main() {
 
-	//experiment.FirstExperiment()
+	experiment.FirstExperiment()
 	//experiment.SecondExperiment()
-
-	experiment.ThirdExperiment()
+	//experiment.ThirdExperiment()
 }
