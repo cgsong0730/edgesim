@@ -9,39 +9,24 @@ import (
 func FirstExperiment() {
 
 	// 60 * 60 * 24 -> 86400, 3600
-	numOfSim := 6
+	numOfSim := 9
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	wg := new(sync.WaitGroup)
 	wg.Add(numOfSim) // num of sim
 
-	//go func() {
-	//	simulation.ImagePullingSimulationWithFile("mkrp", 5, 50, true, true)
-	//	wg.Done()
-	//}()
-	//
-	//go func() {
-	//	simulation.ImagePullingSimulationWithFile("mkrp", 10, 50, true, true)
-	//	wg.Done()
-	//}()
-	//
-	//go func() {
-	//	simulation.ImagePullingSimulationWithFile("mkrp", 15, 50, true, true)
-	//	wg.Done()
-	//}()
-
 	go func() {
-		simulation.ImagePullingSimulationWithFile("comm", 5, 50, false, false)
+		simulation.ImagePullingSimulationWithFile("comm", 2, 50, false, true)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithFile("comm", 10, 50, false, false)
+		simulation.ImagePullingSimulationWithFile("comm", 3, 50, false, true)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithFile("comm", 15, 50, false, false)
+		simulation.ImagePullingSimulationWithFile("comm", 4, 50, false, true)
 		wg.Done()
 	}()
 
@@ -51,12 +36,22 @@ func FirstExperiment() {
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithFile("comm", 10, 50, false, true)
+		simulation.ImagePullingSimulationWithFile("comm", 6, 50, false, true)
 		wg.Done()
 	}()
 
 	go func() {
-		simulation.ImagePullingSimulationWithFile("comm", 15, 50, false, true)
+		simulation.ImagePullingSimulationWithFile("comm", 7, 50, false, true)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("comm", 8, 50, false, true)
+		wg.Done()
+	}()
+
+	go func() {
+		simulation.ImagePullingSimulationWithFile("comm", 9, 50, false, true)
 		wg.Done()
 	}()
 
